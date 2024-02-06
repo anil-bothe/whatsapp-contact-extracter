@@ -30,7 +30,10 @@ class ContactFinder {
   async #promisifyCol(collection, query, count) {
     const db = await this.openConnection();
     return new Promise((resolve, reject) => {
-      const request = db.transaction(collection).objectStore(collection).getAll(query, count);
+      const request = db
+        .transaction(collection)
+        .objectStore(collection)
+        .getAll(query, count);
 
       request.onerror = (event) => {
         reject(event);
@@ -100,11 +103,10 @@ class ContactFinder {
     return members;
   }
 
-
   async downloadMembersAsCSV() {
     const members = await this.getGroupMembers();
     let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += '"Phone","Name","Push Name"\r\n';
+    csvContent += '"Phone","Name","Push Name"\r\n';
 
     for (const [key, value] of members.entries()) {
       const values = [
@@ -112,7 +114,7 @@ class ContactFinder {
         value.name || "",
         value.pushname || "",
       ];
-      const row = values.map((value) => "${value}").join(",");
+      const row = values.map((value) => `${value}`).join(",");
       csvContent += row + "\r\n";
     }
     console.log(csvContent);
@@ -124,7 +126,4 @@ class ContactFinder {
     document.body.appendChild(link); // Required for FF
     link.click();
   }
-
-
-
 }
